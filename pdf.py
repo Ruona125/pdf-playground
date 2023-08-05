@@ -1,13 +1,13 @@
 import PyPDF2
-import sys
 
-inputs = sys.argv[1:]
+template = PyPDF2.PdfReader('super.pdf', 'rb')
+watermark = PyPDF2.PdfReader('wtr.pdf', 'rb')
+output = PyPDF2.PdfWriter()
 
-def pdf_combiner(pdf_list):
-    merger = PyPDF2.PdfMerger()
-    for pdf in pdf_list:
-        print(pdf)
-        merger.append(pdf)
-    merger.write('super.pdf')
+for i in range(len(template.pages)):
+    page = template.pages[i]
+    page.merge_page(watermark.pages[0])
+    output.add_page(page)
 
-pdf_combiner(inputs)  # Call the function with the inputs list
+with open('watermarked_output_new_pdf.pdf', 'wb') as file:
+    output.write(file)
